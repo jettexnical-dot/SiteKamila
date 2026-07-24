@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KAMILA — голосовой ассистент для Windows с поддержкой нейросети, игрового режима и управления системой. Бесплатно 1 час, далее PRO.">
+<meta name="theme-color" content="#0a0a0a">
+<title>KAMILA — Голосовой ассистент нового поколения</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 61 61' xmlns='http://www.w3.org/2000/svg'><path d='M0.577617 40.8764L49.2543 8.15724L48.3895 5.61428L46.6598 0.528363L9.97767 3.66819L0.577617 40.8764Z' fill='white'/><path d='M49.2543 8.15724L0.577617 40.8764L31.7144 59.7945L60.1401 35.1032L49.2543 8.15724Z' fill='%23ccc'/></svg>">
+<style>
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #0f0f0f;
+    --bg-tertiary: #141414;
+    --bg-card: #1a1a1a;
+    --bg-card-hover: #1f1f1f;
+    --bg-elevated: #222222;
+    --bg-glass: rgba(26,26,26,0.72);
+    --border-subtle: #1c1c1c;
+    --border-default: #2a2a2a;
+    --border-strong: #333333;
+    --border-hover: #444444;
+    --text-primary: #ffffff;
+    --text-secondary: #e5e5e5;
+    --text-tertiary: #a0a0a0;
+    --text-muted: #6b6b6b;
+    --text-disabled: #444444;
+    --accent: #ffffff;
+    --accent-dim: #d4d4d4;
+    --gradient-hero: linear-gradient(180deg, #ffffff 0%, #777777 100%);
+    --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+    --gradient-glow: radial-gradient(circle at center, rgba(255,255,255,0.07) 0%, transparent 70%);
+    --gradient-glow-strong: radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, transparent 60%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.6);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.7);
+    --shadow-xl: 0 32px 80px rgba(0,0,0,0.8);
+    --shadow-glow: 0 0 60px rgba(255,255,255,0.04);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-fast: 150ms var(--ease-out);
+    --transition-base: 280ms var(--ease-out);
+    --transition-slow: 450ms var(--ease-out);
+    --container-max: 1200px;
+    --container-padding: 24px;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+    --glass-blur: 24px;
+    --glass-border: rgba(255,255,255,0.08);
+    --glass-highlight: rgba(255,255,255,0.04);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; color-scheme:dark; }
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255,255,255,0.03), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(255,255,255,0.015), transparent);
+    pointer-events:none;
+    z-index:0;
+}
+img, svg { display:block; max-width:100%; }
+a { color:inherit; text-decoration:none; transition:color var(--transition-base); }
+button { font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input, textarea, select { font-family:inherit; border:none; outline:none; background:none; color:inherit; }
+ul, ol { list-style:none; }
+::selection { background:var(--text-primary); color:var(--bg-primary); }
+
+::-webkit-scrollbar { width:8px; height:8px; }
+::-webkit-scrollbar-track { background:var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:var(--radius-full); border:2px solid var(--bg-secondary); }
+::-webkit-scrollbar-thumb:hover { background:var(--border-hover); }
+
+/* ============================================================
+   CONTAINER & SECTION UTILS
+   ============================================================ */
+.container { max-width:var(--container-max); margin:0 auto; padding:0 var(--container-padding); position:relative; z-index:1; }
+.section { padding:120px 0; position:relative; }
+@media(max-width:768px){ .section{padding:80px 0;} }
+.section-header { text-align:center; max-width:720px; margin:0 auto 72px; }
+.section-label {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:6px 16px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-full);
+    font-size:12px; font-weight:600; color:var(--text-tertiary);
+    letter-spacing:0.06em; text-transform:uppercase;
+    margin-bottom:24px;
+}
+.section-label::before {
+    content:''; width:6px; height:6px;
+    background:var(--text-primary);
+    border-radius:50%;
+    box-shadow:0 0 10px var(--text-primary);
+    animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.3);} }
+.section-title {
+    font-size:clamp(32px,5vw,56px);
+    font-weight:800; line-height:1.08; letter-spacing:-0.04em;
+    margin-bottom:20px;
+    background:var(--gradient-hero);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+.section-subtitle { font-size:clamp(15px,1.4vw,18px); color:var(--text-tertiary); line-height:1.7; font-weight:400; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    padding:14px 28px; font-size:14px; font-weight:600;
+    border-radius:var(--radius-md);
+    transition:all var(--transition-base);
+    white-space:nowrap; position:relative; overflow:hidden;
+    letter-spacing:-0.01em;
+}
+.btn::after {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    opacity:0; transition:opacity var(--transition-fast);
+}
+.btn:hover::after { opacity:1; }
+.btn-primary {
+    background:var(--text-primary); color:var(--bg-primary);
+    box-shadow:var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg), 0 0 40px rgba(255,255,255,0.12); }
+.btn-primary:active { transform:translateY(0); }
+.btn-secondary {
+    background:var(--bg-card); color:var(--text-primary);
+    border:1px solid var(--border-default);
+}
+.btn-secondary:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
+.btn-ghost { background:transparent; color:var(--text-secondary); padding:10px 18px; }
+.btn-ghost:hover { color:var(--text-primary); background:rgba(255,255,255,0.04); }
+.btn-icon { width:18px; height:18px; flex-shrink:0; }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+.nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    padding:16px 0;
+    transition:all var(--transition-base);
+    background:rgba(10,10,10,0.6);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:1px solid transparent;
+}
+.nav.scrolled { border-bottom-color:var(--border-subtle); background:rgba(10,10,10,0.88); }
+.nav-container { display:flex; align-items:center; justify-content:space-between; gap:32px; }
+.nav-logo { display:flex; align-items:center; gap:12px; font-size:18px; font-weight:700; letter-spacing:-0.02em; }
+.nav-logo-icon { width:32px; height:32px; flex-shrink:0; }
+.nav-logo-text { background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.nav-menu { display:flex; align-items:center; gap:2px; }
+.nav-link {
+    padding:8px 16px; font-size:13px; font-weight:500; color:var(--text-tertiary);
+    border-radius:var(--radius-sm); transition:all var(--transition-base);
+}
+.nav-link:hover { color:var(--text-primary); background:rgba(255,255,255,0.04); }
+.nav-actions { display:flex; align-items:center; gap:12px; }
+.nav-cta { padding:10px 20px; font-size:13px; }
+.nav-burger {
+    display:none; width:40px; height:40px; align-items:center; justify-content:center;
+    border-radius:var(--radius-sm); background:var(--bg-card); border:1px solid var(--border-default);
+}
+.nav-burger-icon {
+    width:18px; height:2px; background:var(--text-primary); position:relative; transition:all var(--transition-base);
+}
+.nav-burger-icon::before, .nav-burger-icon::after {
+    content:''; position:absolute; left:0; width:100%; height:100%; background:var(--text-primary); transition:all var(--transition-base);
+}
+.nav-burger-icon::before { top:-6px; }
+.nav-burger-icon::after { top:6px; }
+.nav-burger.active .nav-burger-icon { background:transparent; }
+.nav-burger.active .nav-burger-icon::before { top:0; transform:rotate(45deg); }
+.nav-burger.active .nav-burger-icon::after { top:0; transform:rotate(-45deg); }
+@media(max-width:900px){
+    .nav-menu, .nav-actions .btn-ghost { display:none; }
+    .nav-burger { display:none; }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero { padding:160px 0 100px; position:relative; overflow:hidden; }
+.hero::before {
+    content:''; position:absolute; top:15%; left:50%; transform:translateX(-50%);
+    width:900px; height:900px;
+    background:radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+}
+.hero-grid {
+    position:absolute; inset:0;
+    background-image:
+        linear-gradient(var(--border-subtle) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);
+    opacity:0.3; pointer-events:none; z-index:0;
+}
+.hero-content { position:relative; z-index:1; text-align:center; max-width:900px; margin:0 auto; }
+.hero-badge {
+    display:inline-flex; align-items:center; gap:10px;
+    padding:8px 18px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-full);
+    font-size:13px; font-weight:500; color:var(--text-secondary);
+    margin-bottom:32px;
+    backdrop-filter:blur(10px);
+}
+.hero-badge-dot {
+    width:8px; height:8px;
+    background:var(--text-primary); border-radius:50%;
+    box-shadow:0 0 12px var(--text-primary);
+    animation:pulse-dot 2s infinite;
+}
+.hero-title {
+    font-size:clamp(44px,7.5vw,92px);
+    font-weight:800; line-height:1; letter-spacing:-0.045em;
+    margin-bottom:28px;
+    background:linear-gradient(180deg, #ffffff 0%, #666666 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+.hero-title-accent {
+    display:inline-block; position:relative;
+    background:linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+.hero-title-accent::after {
+    content:''; position:absolute; bottom:0.04em; left:0; right:0; height:0.1em;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    border-radius:2px;
+}
+.hero-subtitle {
+    font-size:clamp(15px,1.5vw,18px);
+    color:var(--text-tertiary); line-height:1.7;
+    max-width:640px; margin:0 auto 44px; font-weight:400;
+}
+.hero-actions { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:64px; }
+.hero-stats {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    max-width:760px; margin:0 auto;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-xl);
+    backdrop-filter:blur(10px);
+    overflow:hidden;
+}
+.hero-stat { text-align:center; padding:28px 16px; position:relative; }
+.hero-stat:not(:last-child)::after {
+    content:''; position:absolute; right:0; top:20%; height:60%; width:1px;
+    background:var(--border-default);
+}
+.hero-stat-value {
+    font-size:clamp(24px,3vw,36px); font-weight:800; letter-spacing:-0.03em;
+    background:var(--gradient-hero);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:4px;
+}
+.hero-stat-label { font-size:12px; color:var(--text-muted); font-weight:500; }
+@media(max-width:768px){
+    .hero{padding:120px 0 60px;}
+    .hero-stats{grid-template-columns:repeat(2,1fr); gap:0;}
+    .hero-stat:nth-child(2)::after{display:none;}
+}
+
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+.terminal {
+    max-width:680px; margin:60px auto 0;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    box-shadow:var(--shadow-xl);
+}
+.terminal-header {
+    display:flex; align-items:center; gap:8px;
+    padding:14px 18px;
+    background:var(--bg-elevated);
+    border-bottom:1px solid var(--border-default);
+}
+.terminal-dot { width:12px; height:12px; border-radius:50%; background:var(--border-strong); }
+.terminal-dot:first-child { background:#ff5f57; }
+.terminal-dot:nth-child(2) { background:#febc2e; }
+.terminal-dot:nth-child(3) { background:#28c840; }
+.terminal-title { flex:1; text-align:center; font-family:var(--font-mono); font-size:12px; color:var(--text-muted); }
+.terminal-body { padding:24px; font-family:var(--font-mono); font-size:13px; line-height:1.9; color:var(--text-secondary); min-height:260px; }
+.terminal-line { display:flex; gap:10px; margin-bottom:2px; }
+.terminal-prompt { color:var(--text-muted); user-select:none; }
+.terminal-user { color:var(--text-primary); }
+.terminal-assistant { color:var(--text-tertiary); font-style:italic; }
+.terminal-cursor {
+    display:inline-block; width:8px; height:16px;
+    background:var(--text-primary);
+    animation:blink 1s infinite;
+    vertical-align:middle; margin-left:2px;
+}
+@keyframes blink { 0%,50%{opacity:1;} 51%,100%{opacity:0;} }
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+.features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.feature-card {
+    position:relative; padding:32px;
+    background:var(--gradient-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-lg);
+    transition:all var(--transition-base);
+    overflow:hidden;
+}
+.feature-card::before {
+    content:''; position:absolute; inset:0;
+    background:var(--gradient-glow);
+    opacity:0; transition:opacity var(--transition-base);
+    pointer-events:none;
+}
+.feature-card:hover { transform:translateY(-4px); border-color:var(--border-hover); }
+.feature-card:hover::before { opacity:1; }
+.feature-icon {
+    width:48px; height:48px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-md);
+    margin-bottom:20px;
+    transition:all var(--transition-base);
+}
+.feature-card:hover .feature-icon { background:var(--text-primary); border-color:var(--text-primary); }
+.feature-icon svg { width:24px; height:24px; stroke:var(--text-primary); transition:stroke var(--transition-base); }
+.feature-card:hover .feature-icon svg { stroke:var(--bg-primary); }
+.feature-title { font-size:17px; font-weight:700; margin-bottom:10px; letter-spacing:-0.01em; }
+.feature-description { font-size:14px; color:var(--text-tertiary); line-height:1.65; }
+.feature-tag {
+    display:inline-block; margin-top:16px;
+    padding:4px 10px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-full);
+    font-size:11px; font-weight:600; color:var(--text-muted);
+    text-transform:uppercase; letter-spacing:0.06em;
+    font-family:var(--font-mono);
+}
+@media(max-width:1024px){ .features-grid{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:640px){ .features-grid{grid-template-columns:1fr;} .feature-card{padding:24px;} }
+
+/* ============================================================
+   COMMANDS SHOWCASE
+   ============================================================ */
+.commands-showcase { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-top:40px; }
+.command-pill {
+    padding:12px 16px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-md);
+    font-family:var(--font-mono); font-size:12px; color:var(--text-secondary);
+    transition:all var(--transition-base);
+    display:flex; align-items:center; gap:10px;
+}
+.command-pill:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
+.command-pill-icon { width:14px; height:14px; flex-shrink:0; opacity:0.5; }
+.command-pill-icon svg { width:100%; height:100%; stroke:var(--text-tertiary); }
+
+/* ============================================================
+   MODES
+   ============================================================ */
+.modes-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.mode-card {
+    position:relative; padding:40px 28px;
+    background:linear-gradient(180deg, #141414 0%, #0c0c0c 100%);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-xl);
+    overflow:hidden;
+    transition:all var(--transition-base);
+}
+.mode-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+.mode-card:hover { transform:translateY(-6px); border-color:var(--border-hover); box-shadow:var(--shadow-lg); }
+.mode-number {
+    font-family:var(--font-mono); font-size:12px; font-weight:600;
+    color:var(--text-muted); margin-bottom:24px; letter-spacing:0.06em; text-transform:uppercase;
+}
+.mode-icon {
+    width:64px; height:64px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-lg);
+    margin-bottom:28px;
+}
+.mode-icon svg { width:32px; height:32px; stroke:var(--text-primary); }
+.mode-title { font-size:22px; font-weight:700; margin-bottom:12px; letter-spacing:-0.02em; }
+.mode-description { font-size:15px; color:var(--text-tertiary); line-height:1.65; margin-bottom:28px; }
+.mode-features { display:flex; flex-direction:column; gap:12px; }
+.mode-feature { display:flex; align-items:center; gap:12px; font-size:14px; color:var(--text-secondary); }
+.mode-feature-icon {
+    width:20px; height:20px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated); border-radius:50%;
+}
+.mode-feature-icon svg { width:12px; height:12px; stroke:var(--text-primary); stroke-width:3; }
+@media(max-width:1024px){ .modes-grid{grid-template-columns:1fr;} }
+
+/* ============================================================
+   VOICES
+   ============================================================ */
+.voices-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; max-width:850px; margin:0 auto; }
+.voice-card {
+    padding:24px 14px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-md);
+    text-align:center;
+    transition:all var(--transition-base);
+}
+.voice-card:hover { transform:translateY(-4px); border-color:var(--border-hover); background:var(--bg-card-hover); }
+.voice-avatar {
+    width:56px; height:56px; margin:0 auto 14px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:50%;
+    font-size:20px; font-weight:700; color:var(--text-primary);
+}
+.voice-name { font-size:14px; font-weight:600; margin-bottom:4px; }
+.voice-type { font-size:11px; color:var(--text-muted); font-family:var(--font-mono); }
+@media(max-width:768px){ .voices-grid{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:400px){ .voices-grid{grid-template-columns:1fr;} }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:860px; margin:0 auto; }
+.pricing-card {
+    position:relative; padding:40px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-xl);
+    transition:all var(--transition-base);
+}
+.pricing-card:hover { transform:translateY(-4px); border-color:var(--border-hover); }
+.pricing-card.featured {
+    background:linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
+    border-color:var(--border-strong);
+    box-shadow:var(--shadow-xl), 0 0 80px rgba(255,255,255,0.03);
+}
+.pricing-card.featured::before {
+    content:''; position:absolute; inset:0;
+    border-radius:var(--radius-xl);
+    padding:1px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.25), transparent, rgba(255,255,255,0.08));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+}
+.pricing-badge {
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    padding:6px 16px;
+    background:var(--text-primary); color:var(--bg-primary);
+    font-size:11px; font-weight:700;
+    border-radius:var(--radius-full);
+    text-transform:uppercase; letter-spacing:0.08em;
+    box-shadow:var(--shadow-md);
+}
+.pricing-header { margin-bottom:32px; }
+.pricing-name { font-size:13px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; }
+.pricing-price { display:flex; align-items:baseline; gap:8px; margin-bottom:12px; }
+.pricing-amount {
+    font-size:52px; font-weight:800; letter-spacing:-0.04em;
+    background:var(--gradient-hero);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    line-height:1;
+}
+.pricing-period { font-size:14px; color:var(--text-muted); font-weight:500; }
+.pricing-description { font-size:14px; color:var(--text-tertiary); line-height:1.65; }
+.pricing-features { display:flex; flex-direction:column; gap:14px; margin-bottom:36px; padding:28px 0; border-top:1px solid var(--border-default); border-bottom:1px solid var(--border-default); }
+.pricing-feature { display:flex; align-items:flex-start; gap:12px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+.pricing-feature-icon {
+    width:20px; height:20px; flex-shrink:0; margin-top:1px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background:var(--bg-elevated); border:1px solid var(--border-default);
+}
+.pricing-feature-icon svg { width:12px; height:12px; stroke:var(--text-primary); stroke-width:3; }
+.pricing-feature.disabled { color:var(--text-muted); }
+.pricing-feature.disabled .pricing-feature-icon { background:transparent; border-color:var(--border-subtle); }
+.pricing-feature.disabled .pricing-feature-icon svg { stroke:var(--text-muted); }
+.pricing-cta { width:100%; padding:16px; font-size:15px; }
+@media(max-width:768px){ .pricing-grid{grid-template-columns:1fr;} .pricing-card{padding:32px 24px;} .pricing-amount{font-size:42px;} }
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.comparison { margin-top:80px; max-width:860px; margin-left:auto; margin-right:auto; }
+.comparison-title { text-align:center; font-size:22px; font-weight:700; margin-bottom:32px; letter-spacing:-0.02em; }
+.comparison-table { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-xl); overflow:hidden; }
+.comparison-row {
+    display:grid; grid-template-columns:2fr 1fr 1fr;
+    align-items:center; padding:16px 28px;
+    border-bottom:1px solid var(--border-subtle);
+    transition:background var(--transition-base);
+}
+.comparison-row:last-child { border-bottom:none; }
+.comparison-row:hover { background:var(--bg-card-hover); }
+.comparison-row.header { background:var(--bg-elevated); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-tertiary); padding:14px 28px; }
+.comparison-row.header .comparison-cell:not(:first-child) { text-align:center; }
+.comparison-cell { font-size:14px; color:var(--text-secondary); }
+.comparison-cell:not(:first-child) { text-align:center; }
+.comparison-cell.feature-name { font-weight:500; color:var(--text-primary); }
+.comparison-check {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--bg-elevated); border:1px solid var(--border-default);
+}
+.comparison-check svg { width:12px; height:12px; stroke:var(--text-primary); stroke-width:3; }
+.comparison-check.no { background:transparent; border-color:var(--border-subtle); }
+.comparison-check.no svg { stroke:var(--text-muted); }
+.comparison-text { font-family:var(--font-mono); font-size:13px; color:var(--text-tertiary); }
+@media(max-width:640px){ .comparison-row{grid-template-columns:1.5fr 1fr 1fr; padding:12px 14px; gap:6px;} .comparison-cell{font-size:12px;} .comparison-row.header{padding:12px 14px;} }
+
+/* ============================================================
+   STEPS
+   ============================================================ */
+.steps { display:flex; flex-direction:column; gap:20px; max-width:760px; margin:0 auto; }
+.step {
+    display:grid; grid-template-columns:72px 1fr; gap:28px;
+    padding:28px;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-lg);
+    transition:all var(--transition-base);
+    position:relative;
+}
+.step:not(:last-child)::after {
+    content:''; position:absolute; left:63px; bottom:-20px; width:2px; height:20px;
+    background:linear-gradient(180deg, var(--border-strong), transparent);
+}
+.step:hover { transform:translateX(4px); border-color:var(--border-hover); background:var(--bg-card-hover); }
+.step-number {
+    width:56px; height:56px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-md);
+    font-family:var(--font-mono); font-size:20px; font-weight:700; color:var(--text-primary);
+    flex-shrink:0;
+}
+.step-content { display:flex; flex-direction:column; justify-content:center; }
+.step-title { font-size:18px; font-weight:700; margin-bottom:8px; letter-spacing:-0.01em; }
+.step-description { font-size:14px; color:var(--text-tertiary); line-height:1.65; margin-bottom:12px; }
+.step-code {
+    display:inline-block; padding:6px 12px;
+    background:var(--bg-primary);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-sm);
+    font-family:var(--font-mono); font-size:12px; color:var(--text-secondary);
+}
+@media(max-width:640px){ .step{grid-template-columns:1fr; gap:16px; padding:20px;} .step:not(:last-child)::after{display:none;} .step-number{width:48px; height:48px; font-size:18px;} }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-list { max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:10px; }
+.faq-item {
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-md);
+    overflow:hidden; transition:all var(--transition-base);
+}
+.faq-item:hover { border-color:var(--border-hover); }
+.faq-item.active { border-color:var(--border-strong); background:var(--bg-card-hover); }
+.faq-question {
+    width:100%; padding:20px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    text-align:left; font-size:15px; font-weight:600; color:var(--text-primary);
+    transition:color var(--transition-base);
+}
+.faq-icon {
+    width:28px; height:28px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-default);
+    border-radius:50%;
+    transition:all var(--transition-base);
+}
+.faq-item.active .faq-icon { background:var(--text-primary); border-color:var(--text-primary); transform:rotate(45deg); }
+.faq-icon svg { width:14px; height:14px; stroke:var(--text-primary); stroke-width:2.5; transition:stroke var(--transition-base); }
+.faq-item.active .faq-icon svg { stroke:var(--bg-primary); }
+.faq-answer { max-height:0; overflow:hidden; transition:max-height var(--transition-slow); }
+.faq-item.active .faq-answer { max-height:500px; }
+.faq-answer-content { padding:0 24px 20px; font-size:14px; color:var(--text-tertiary); line-height:1.7; }
+.faq-answer-content p+p { margin-top:10px; }
+.faq-answer-content code { padding:2px 8px; background:var(--bg-elevated); border:1px solid var(--border-default); border-radius:4px; font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); }
+@media(max-width:640px){ .faq-question{padding:16px 18px; font-size:14px;} .faq-answer-content{padding:0 18px 18px; font-size:13px;} }
+
+/* ============================================================
+   CTA
+   ============================================================ */
+.cta-section { padding:100px 0; position:relative; overflow:hidden; }
+.cta-box {
+    position:relative; padding:80px 40px;
+    background:linear-gradient(135deg, #151515 0%, #0a0a0a 100%);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-xl);
+    text-align:center; overflow:hidden;
+}
+.cta-box::before {
+    content:''; position:absolute; top:-50%; left:50%; transform:translateX(-50%);
+    width:120%; height:200%;
+    background:radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events:none;
+}
+.cta-box::after {
+    content:''; position:absolute; inset:0;
+    background-image:
+        linear-gradient(var(--border-subtle) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);
+    opacity:0.2; pointer-events:none;
+}
+.cta-content { position:relative; z-index:1; max-width:600px; margin:0 auto; }
+.cta-title {
+    font-size:clamp(28px,4vw,44px);
+    font-weight:800; line-height:1.1; letter-spacing:-0.03em;
+    margin-bottom:20px;
+    background:var(--gradient-hero);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+.cta-description { font-size:16px; color:var(--text-tertiary); line-height:1.65; margin-bottom:36px; }
+.cta-actions { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; }
+@media(max-width:640px){ .cta-box{padding:60px 20px;} }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer { padding:80px 0 40px; border-top:1px solid var(--border-subtle); background:var(--bg-secondary); position:relative; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:60px; }
+.footer-brand { max-width:300px; }
+.footer-logo { display:flex; align-items:center; gap:12px; margin-bottom:20px; font-size:18px; font-weight:700; letter-spacing:-0.02em; }
+.footer-logo-icon { width:32px; height:32px; }
+.footer-description { font-size:14px; color:var(--text-tertiary); line-height:1.7; margin-bottom:24px; }
+.footer-socials { display:flex; gap:10px; }
+.footer-social {
+    width:40px; height:40px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:var(--radius-sm);
+    transition:all var(--transition-base);
+}
+.footer-social:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
+.footer-social svg { width:18px; height:18px; fill:var(--text-secondary); }
+.footer-column-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-primary); margin-bottom:20px; }
+.footer-links { display:flex; flex-direction:column; gap:12px; }
+.footer-link { font-size:14px; color:var(--text-tertiary); transition:color var(--transition-base); }
+.footer-link:hover { color:var(--text-primary); }
+.footer-bottom {
+    padding-top:32px; border-top:1px solid var(--border-subtle);
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+}
+.footer-copyright { font-size:13px; color:var(--text-muted); }
+.footer-legal { display:flex; gap:24px; }
+.footer-legal a { font-size:13px; color:var(--text-muted); }
+.footer-legal a:hover { color:var(--text-secondary); }
+@media(max-width:900px){ .footer-grid{grid-template-columns:1fr 1fr; gap:40px;} .footer-brand{grid-column:1/-1; max-width:none;} }
+@media(max-width:640px){ .footer-grid{grid-template-columns:1fr; gap:32px;} .footer-bottom{flex-direction:column; text-align:center;} .footer-legal{flex-wrap:wrap; justify-content:center;} }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+.fade-in { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+.fade-in.visible { opacity:1; transform:translateY(0); }
+.stagger > * { opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease; }
+.stagger.visible > * { opacity:1; transform:translateY(0); }
+.stagger.visible > *:nth-child(1){transition-delay:.04s;}
+.stagger.visible > *:nth-child(2){transition-delay:.08s;}
+.stagger.visible > *:nth-child(3){transition-delay:.12s;}
+.stagger.visible > *:nth-child(4){transition-delay:.16s;}
+.stagger.visible > *:nth-child(5){transition-delay:.20s;}
+.stagger.visible > *:nth-child(6){transition-delay:.24s;}
+.stagger.visible > *:nth-child(7){transition-delay:.28s;}
+.stagger.visible > *:nth-child(8){transition-delay:.32s;}
+.stagger.visible > *:nth-child(9){transition-delay:.36s;}
+.stagger.visible > *:nth-child(10){transition-delay:.40s;}
+.stagger.visible > *:nth-child(11){transition-delay:.44s;}
+.stagger.visible > *:nth-child(12){transition-delay:.48s;}
+
+/* ============================================================
+   GLASSMORPHISM COMPONENTS
+   ============================================================ */
+.glass-surface {
+    position:relative; border-radius:var(--radius-xl);
+    border:1px solid var(--glass-border);
+    background:var(--glass-card-bg);
+    backdrop-filter:blur(var(--glass-blur)) saturate(1.25);
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+}
+
+/* ============================================================
+   PARTICLE CANVAS
+   ============================================================ */
+#particleCanvas {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:0; opacity:0.4;
+}
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+.scroll-progress {
+    position:fixed; top:0; left:0; height:2px; z-index:1001;
+    background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.15));
+    transition:width .1s linear;
+    width:0%;
+}
+
+/* ============================================================
+   CUSTOM CURSOR GLOW
+   ============================================================ */
+.cursor-glow {
+    position:fixed; width:400px; height:400px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%);
+    transition:opacity .3s;
+    opacity:0;
+}
+
+/* ============================================================
+   COMPARISON VS SECTION
+   ============================================================ */
+.vs-section { padding:80px 0; }
+.vs-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:0; align-items:start; max-width:900px; margin:0 auto; }
+.vs-col { padding:32px; background:var(--bg-card); border:1px solid var(--border-default); }
+.vs-col:first-child { border-radius:var(--radius-xl) 0 0 var(--radius-xl); border-right:none; }
+.vs-col:last-child { border-radius:0 var(--radius-xl) var(--radius-xl) 0; border-left:none; }
+.vs-center {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 20px;
+    background:var(--bg-elevated);
+    border-top:1px solid var(--border-default);
+    border-bottom:1px solid var(--border-default);
+    min-height:100%;
+}
+.vs-center-label {
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--text-muted); writing-mode:vertical-lr; text-orientation:mixed;
+}
+.vs-col-title { font-size:18px; font-weight:700; margin-bottom:20px; text-align:center; }
+.vs-col-title span { display:block; font-size:12px; color:var(--text-muted); font-weight:500; margin-top:4px; }
+.vs-feature { display:flex; align-items:center; gap:10px; padding:10px 0; font-size:14px; color:var(--text-secondary); border-bottom:1px solid var(--border-subtle); }
+.vs-feature:last-child { border-bottom:none; }
+.vs-feature svg { width:16px; height:16px; flex-shrink:0; }
+.vs-feature .check { stroke:var(--text-primary); }
+.vs-feature .cross { stroke:var(--text-muted); }
+@media(max-width:768px){
+    .vs-grid{grid-template-columns:1fr; gap:16px;}
+    .vs-col, .vs-col:first-child, .vs-col:last-child { border-radius:var(--radius-xl); border:1px solid var(--border-default); }
+    .vs-center{flex-direction:row; min-height:auto; padding:16px;}
+    .vs-center-label{writing-mode:horizontal-tb; font-size:12px;}
+}
+
+/* ============================================================
+   FLOATING LOGO ANIMATION
+   ============================================================ */
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+@keyframes rotate-slow { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+@keyframes shimmer { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
+
+/* ============================================================
+   BADGE / PILL ANIMATIONS
+   ============================================================ */
+.pulse-ring {
+    position:relative;
+}
+.pulse-ring::before {
+    content:''; position:absolute; inset:-4px;
+    border:2px solid rgba(255,255,255,0.1);
+    border-radius:inherit;
+    animation:pulse-ring-anim 2s infinite;
+}
+@keyframes pulse-ring-anim {
+    0%{transform:scale(1);opacity:0.5;}
+    50%{transform:scale(1.04);opacity:0;}
+    100%{transform:scale(1);opacity:0;}
+}
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+.back-to-top {
+    position:fixed; bottom:32px; right:32px;
+    width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-card);
+    border:1px solid var(--border-default);
+    border-radius:50%;
+    z-index:999;
+    opacity:0; transform:translateY(20px);
+    transition:all var(--transition-base);
+    cursor:pointer;
+    backdrop-filter:blur(12px);
+}
+.back-to-top.visible { opacity:1; transform:translateY(0); }
+.back-to-top:hover { background:var(--text-primary); border-color:var(--text-primary); }
+.back-to-top:hover svg { stroke:var(--bg-primary); }
+.back-to-top svg { width:18px; height:18px; stroke:var(--text-primary); transition:stroke var(--transition-base); }
+
+/* ============================================================
+   TECH STACK BAR
+   ============================================================ */
+.tech-stack { padding:60px 0; border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle); }
+.tech-stack-inner { display:flex; align-items:center; justify-content:center; gap:48px; flex-wrap:wrap; opacity:0.4; }
+.tech-item { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:var(--text-tertiary); }
+.tech-item svg { width:20px; height:20px; stroke:var(--text-tertiary); }
+</style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Particle Canvas -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- ===========================
+     NAVIGATION
+     =========================== -->
+<nav class="nav" id="nav">
+    <div class="container nav-container">
+        <a href="#" class="nav-logo">
+            <svg class="nav-logo-icon" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.577617 40.8764L49.2543 8.15724L48.3895 5.61428L46.6598 0.528363L9.97767 3.66819L0.577617 40.8764Z" fill="white"/>
+                <path d="M49.2543 8.15724L0.577617 40.8764L31.7144 59.7945L60.1401 35.1032L49.2543 8.15724Z" fill="#E5E5E5"/>
+                <path d="M0.577617 40.8764L49.2543 8.15724M0.577617 40.8764L9.97767 3.66819L46.6598 0.528363L48.3895 5.61428L49.2543 8.15724M0.577617 40.8764L31.7144 59.7945L60.1401 35.1032L49.2543 8.15724" stroke="white" stroke-opacity="0.53"/>
+            </svg>
+            <span class="nav-logo-text">KAMILA</span>
+        </a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#features" class="nav-link">Возможности</a></li>
+            <li><a href="#modes" class="nav-link">Режимы</a></li>
+            <li><a href="#pricing" class="nav-link">Тарифы</a></li>
+            <li><a href="#install" class="nav-link">Установка</a></li>
+            <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://t.me/Jet_Technik" class="btn btn-ghost" target="_blank" rel="noopener">Telegram</a>
+            <a href="#pricing" class="btn btn-primary nav-cta">
+                Скачать
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <button class="nav-burger" id="navBurger" aria-label="Меню"><span class="nav-burger-icon"></span></button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===========================
+     HERO
+     =========================== -->
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span>Версия 1.00 &middot; Windows 10/11 &middot; Python</span>
+            </div>
+            <h1 class="hero-title">
+                Голосовой ассистент<br>
+                <span class="hero-title-accent">нового поколения</span>
+            </h1>
+            <p class="hero-subtitle">
+                KAMILA &mdash; локальный ассистент для Windows с поддержкой нейросетей, игрового режима, управления системой и голосовых команд. Работает офлайн, отвечает мгновенно, не требует подписки.
+            </p>
+            <div class="hero-actions">
+                <a href="#pricing" class="btn btn-primary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Скачать бесплатно
+                </a>
+                <a href="#features" class="btn btn-secondary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+                    Возможности
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value" data-count="150">0</div>
+                    <div class="hero-stat-label">Голосовых команд</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" data-count="3">0</div>
+                    <div class="hero-stat-label">Режима работы</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" data-count="5">0</div>
+                    <div class="hero-stat-label">Голосов TTS</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">1ч</div>
+                    <div class="hero-stat-label">Бесплатно</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+                <div class="terminal-title">kamila &mdash; voice assistant</div>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line"><span class="terminal-prompt">&#10095;</span><span class="terminal-user">камила, какая погода в Москве?</span></div>
+                <div class="terminal-line"><span class="terminal-assistant">В Москве сейчас +12&deg;, облачно. Ощущается как +9&deg;.</span></div>
+                <div class="terminal-line"><span class="terminal-prompt">&#10095;</span><span class="terminal-user">открой браузер и найди новости</span></div>
+                <div class="terminal-line"><span class="terminal-assistant">Открываю Яндекс. Ищу новости...</span></div>
+                <div class="terminal-line"><span class="terminal-prompt">&#10095;</span><span class="terminal-user">смени режим на игровой</span></div>
+                <div class="terminal-line"><span class="terminal-assistant">Игровой режим активирован. Оптимизирую систему...</span></div>
+                <div class="terminal-line"><span class="terminal-prompt">&#10095;</span><span class="terminal-cursor"></span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     TECH STACK
+     =========================== -->
+<div class="tech-stack">
+    <div class="container">
+        <div class="tech-stack-inner">
+            <div class="tech-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Windows 10/11
+            </div>
+            <div class="tech-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Python 3.10+
+            </div>
+            <div class="tech-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-python"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 9h-7a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h3" /><path d="M12 15h7a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-3" /><path d="M8 9v-4a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v5a2 2 0 0 1 -2 2h-4a2 2 0 0 0 -2 2v5a2 2 0 0 0 2 2h4a2 2 0 0 0 2 -2v-4" /><path d="M11 6l0 .01" /><path d="M13 18l0 .01" /></svg>
+                PyQt6
+            </div>
+            <div class="tech-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-language-katakana"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 5h6.586a1 1 0 0 1 .707 1.707l-1.293 1.293" /><path d="M8 8c0 1.5 .5 3 -2 5" /><path d="M12 20l4 -9l4 9" /><path d="M19.1 18h-6.2" /></svg>
+                Vosk STT
+            </div>
+            <div class="tech-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+                Silero TTS
+            </div>
+            <div class="tech-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-stackshare"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M17 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M3 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M7 12h3l3.5 6h3.5" /><path d="M17 6h-3.5l-3.5 6" /></svg>
+                OpenRouter
+            </div>
+            <div class="tech-item">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bot-id"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 10.5c0 -.828 .746 -1.5 1.667 -1.5h6.666c.92 0 1.667 .672 1.667 1.5v3c0 .828 -.746 1.5 -1.667 1.5h-6.666c-.92 0 -1.667 -.672 -1.667 -1.5v-3" /><path d="M12 7v2" /><path d="M10 12v.01" /><path d="M14 12v.01" /><path d="M4 8v-2a2 2 0 0 1 2 -2h2" /><path d="M4 16v2a2 2 0 0 0 2 2h2" /><path d="M16 4h2a2 2 0 0 1 2 2v2" /><path d="M16 20h2a2 2 0 0 0 2 -2v-2" /></svg>
+                Telegram Bot 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===========================
+     FEATURES
+     =========================== -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Возможности</div>
+            <h2 class="section-title">Всё, что нужно &mdash; в одном ассистенте</h2>
+            <p class="section-subtitle">
+                KAMILA объединяет управление системой, нейросети, игровые инструменты и голосовой ввод в единый интерфейс. Без рекламы, без телеметрии, без подписок.
+            </p>
+        </div>
+        <div class="features-grid stagger">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1"/></svg>
+                </div>
+                <h3 class="feature-title">Голосовое управление</h3>
+                <p class="feature-description">Распознавание речи на базе Vosk. Активация по слову «Камила», работа офлайн, поддержка микрофонов и Bluetooth-гарнитур.</p>
+                <span class="feature-tag">offline</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+                </div>
+                <h3 class="feature-title">Нейросети</h3>
+                <p class="feature-description">Интеграция с OpenRouter: доступ к GPT-4, Claude, Llama и другим моделям. Генерация кода, ответы на вопросы, саммари экрана.</p>
+                <span class="feature-tag">ai</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3 class="feature-title">Управление системой</h3>
+                <p class="feature-description">Открытие приложений, управление громкостью и яркостью, смена обоев, темы Windows, очистка мусора, выключение и сон ПК.</p>
+                <span class="feature-tag">system</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <h3 class="feature-title">Игровой режим</h3>
+                <p class="feature-description">Автокликер, удержание клавиш, FPS/пинг оверлей, прицел на экране, оптимизация производительности, запуск игр голосом.</p>
+                <span class="feature-tag">gaming</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3 class="feature-title">Таймеры и напоминания</h3>
+                <p class="feature-description">Установка таймеров, напоминаний на конкретное время, отслеживание рабочего времени, отчёты о продуктивности.</p>
+                <span class="feature-tag">productivity</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <h3 class="feature-title">Протоколы</h3>
+                <p class="feature-description">Создание макросов из последовательности команд. Автозапуск протоколов при старте, запись действий, управление из Telegram.</p>
+                <span class="feature-tag">automation</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <h3 class="feature-title">Поиск файлов</h3>
+                <p class="feature-description">Мгновенный поиск по Downloads, Documents, Desktop. Открытие найденных файлов в проводнике, голосовой запуск документов.</p>
+                <span class="feature-tag">search</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878"/></svg>
+                </div>
+                <h3 class="feature-title">Погода</h3>
+                <p class="feature-description">Плавающий виджет погоды с данными из Open-Meteo и MET Norway. Прогноз для любого города, обновление каждые 10 минут.</p>
+                <span class="feature-tag">widget</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                </div>
+                <h3 class="feature-title">Медиа-контроль</h3>
+                <p class="feature-description">Управление Spotify и YouTube: воспроизведение, перемотка, поиск треков. Голосовой запуск случайной музыки или конкретного трека.</p>
+                <span class="feature-tag">media</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <h3 class="feature-title">Генерация изображений</h3>
+                <p class="feature-description">Создание картинок через Pollinations AI. Поддержка стилей: аниме, неон, реализм, фэнтези, киберпанк. Сохранение в Downloads.</p>
+                <span class="feature-tag">ai art</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"/><path d="M9 16c1 .667 2 1 3 1s2 -.333 3 -1"/><path d="M9 7l-1 -4"/><path d="M15 7l1 -4"/><path d="M9 12v-1"/><path d="M15 12v-1"/></svg>
+                </div>
+                <h3 class="feature-title">Telegram-бот</h3>
+                <p class="feature-description">Удалённое управление ПК через Telegram: скриншоты, запуск команд, файловый менеджер, управление процессами, уведомления.</p>
+                <span class="feature-tag">remote</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2"/><path d="M16 7h4"/><path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3"/></svg>
+                </div>
+                <h3 class="feature-title">Диктовка текста</h3>
+                <p class="feature-description">Преобразование речи в текст в реальном времени. Голосовой ввод в любое активное окно &mdash; документы, чаты, код.</p>
+                <span class="feature-tag">dictation</span>
+            </div>
+        </div>
+        <div class="commands-showcase stagger">
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;открой браузер&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;громкость 50&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;сделай скриншот&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;смени режим на игровой&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;найди файл отчёт&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;активируй автокликер&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;напомни через час&raquo;</div>
+            <div class="command-pill"><span class="command-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>&laquo;сгенерируй картинку&raquo;</div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     MODES
+     =========================== -->
+<section class="section" id="modes">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Режимы работы</div>
+            <h2 class="section-title">Три режима &mdash; одна команда</h2>
+            <p class="section-subtitle">Переключайтесь между режимами голосом или кнопкой. Каждый режим оптимизирован под конкретные задачи.</p>
+        </div>
+        <div class="modes-grid stagger">
+            <div class="mode-card">
+                <div class="mode-number">01 / LOCAL</div>
+                <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                <h3 class="mode-title">Локальный</h3>
+                <p class="mode-description">Базовый режим для управления системой. Работает полностью офлайн, без интернета и API-ключей.</p>
+                <div class="mode-features">
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Открытие приложений и файлов</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Управление громкостью и яркостью</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Таймеры и напоминания</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Смена обоев и темы Windows</span></div>
+                </div>
+            </div>
+            <div class="mode-card">
+                <div class="mode-number">02 / GAMING</div>
+                <div class="mode-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-steam"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M16.5 5a4.5 4.5 0 1 1 -.653 8.953l-4.347 3.009l0 .038a3 3 0 0 1 -2.824 3l-.176 0a3 3 0 0 1 -2.94 -2.402l-2.56 -1.098v-3.5l3.51 1.755a2.989 2.989 0 0 1 2.834 -.635l2.727 -3.818a4.5 4.5 0 0 1 4.429 -5.302" /><path d="M15.5 9.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" fill="currentColor" /></svg></div>
+                <h3 class="mode-title">Игровой</h3>
+                <p class="mode-description">Специализированный режим для геймеров. Автокликер, оверлеи, оптимизация производительности.</p>
+                <div class="mode-features">
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Автокликер с настройкой задержки</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>FPS и пинг оверлей</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Прицел на экране</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Удержание клавиш (WASD, Shift)</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Оптимизация системы под игры</span></div>
+                </div>
+            </div>
+            <div class="mode-card">
+                <div class="mode-number">03 / NEURAL</div>
+                <div class="mode-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sparkle-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c.375 0 .711 .231 .846 .581l1.65 4.29a2.85 2.85 0 0 0 1.632 1.633l4.291 1.65a.906 .906 0 0 1 0 1.692l-4.29 1.65a2.84 2.84 0 0 0 -1.633 1.632l-1.65 4.291a.906 .906 0 0 1 -1.692 0l-1.65 -4.29a2.84 2.84 0 0 0 -1.632 -1.633l-4.291 -1.65a.906 .906 0 0 1 0 -1.692l4.29 -1.65a2.84 2.84 0 0 0 1.633 -1.632l1.65 -4.291a.91 .91 0 0 1 .846 -.581" /></svg></div>
+                <h3 class="mode-title">Нейросеть</h3>
+                <p class="mode-description">Доступ к AI-моделям через OpenRouter. Генерация кода, ответы на вопросы, анализ экрана.</p>
+                <div class="mode-features">
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>GPT-4, Claude, Llama и другие</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Генерация кода Python/HTML</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Чтение и саммари экрана</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Генерация изображений</span></div>
+                    <div class="mode-feature"><span class="mode-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Умный снайпер (OCR + клик)</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     VOICES
+     =========================== -->
+<section class="section">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Голоса</div>
+            <h2 class="section-title">5 голосов на базе Silero TTS</h2>
+            <p class="section-subtitle">Качественная синтезированная речь на русском языке. Выберите голос, который подходит именно вам.</p>
+        </div>
+        <div class="voices-grid stagger">
+            <div class="voice-card"><div class="voice-avatar">К</div><div class="voice-name">Камила</div><div class="voice-type">female &middot; baya</div></div>
+            <div class="voice-card"><div class="voice-avatar">Д</div><div class="voice-name">Дрейк</div><div class="voice-type">male &middot; eugene</div></div>
+            <div class="voice-card"><div class="voice-avatar">Н</div><div class="voice-name">Настя</div><div class="voice-type">female &middot; kseniya</div></div>
+            <div class="voice-card"><div class="voice-avatar">М</div><div class="voice-name">Майк</div><div class="voice-type">male &middot; aidar</div></div>
+            <div class="voice-card"><div class="voice-avatar">Е</div><div class="voice-name">Ева</div><div class="voice-type">female &middot; xenia</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     VS COMPARISON
+     =========================== -->
+
+<!-- ===========================
+     PRICING
+     =========================== -->
+<section class="section" id="pricing">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Тарифы</div>
+            <h2 class="section-title">Простая и честная модель</h2>
+            <p class="section-subtitle">Попробуйте KAMILA бесплатно в течение часа. Если понравится &mdash; активируйте PRO одним ключом навсегда.</p>
+        </div>
+        <div class="pricing-grid stagger">
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <div class="pricing-name">Free</div>
+                    <div class="pricing-price"><span class="pricing-amount">0&#8381;</span></div>
+                    <p class="pricing-description">Полный час работы без ограничений по функциям. Идеально, чтобы протестировать все возможности ассистента.</p>
+                </div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>1 час использования</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Все 150+ голосовых команд</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Все три режима работы</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>5 голосов Silero TTS</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Локальное распознавание речи</span></div>
+                    <div class="pricing-feature disabled"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>Нейросети после исчерпания часа</span></div>
+                    <div class="pricing-feature disabled"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span>Бессрочная активация</span></div>
+                </div>
+                <a href="#" class="btn btn-secondary pricing-cta">Начать бесплатно</a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Рекомендуем</div>
+                <div class="pricing-header">
+                    <div class="pricing-name">Pro</div>
+                    <div class="pricing-price"><span class="pricing-amount">250&#8381;</span><span class="pricing-period">навсегда</span></div>
+                    <p class="pricing-description">Одноразовая активация по ключу. Все функции без ограничений по времени. Привязка к устройству.</p>
+                </div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Бессрочный доступ</strong> ко всем функциям</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Нейросети без ограничений</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Все обновления бесплатно</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Привязка к одному устройству</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Поддержка в Telegram</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Приоритет в разработке фич</span></div>
+                    <div class="pricing-feature"><span class="pricing-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Без телеметрии и рекламы</span></div>
+                </div>
+                <a href="#" class="btn btn-primary pricing-cta">Получить ключ активации</a>
+            </div>
+        </div>
+        <div class="comparison fade-in">
+            <h3 class="comparison-title">Сравнение тарифов</h3>
+            <div class="comparison-table">
+                <div class="comparison-row header"><div class="comparison-cell">Функция</div><div class="comparison-cell">Free</div><div class="comparison-cell">Pro</div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Голосовое управление</div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Управление системой</div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Игровой режим</div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Нейросети (OpenRouter)</div><div class="comparison-cell"><span class="comparison-text">1 час</span></div><div class="comparison-cell"><span class="comparison-text">безлимит</span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Генерация кода</div><div class="comparison-cell"><span class="comparison-text">1 час</span></div><div class="comparison-cell"><span class="comparison-text">безлимит</span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Генерация изображений</div><div class="comparison-cell"><span class="comparison-text">1 час</span></div><div class="comparison-cell"><span class="comparison-text">безлимит</span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Telegram-бот</div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div><div class="comparison-cell"><span class="comparison-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Обновления</div><div class="comparison-cell"><span class="comparison-text">в рамках Free</span></div><div class="comparison-cell"><span class="comparison-text">все</span></div></div>
+                <div class="comparison-row"><div class="comparison-cell feature-name">Поддержка</div><div class="comparison-cell"><span class="comparison-text">&mdash;</span></div><div class="comparison-cell"><span class="comparison-text">Telegram</span></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     INSTALLATION
+     =========================== -->
+<section class="section" id="install">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Установка</div>
+            <h2 class="section-title">Запуск за 3 минуты</h2>
+            <p class="section-subtitle">Никаких сложных настроек. Скачайте, запустите, скажите «Камила» &mdash; и ассистент готов к работе.</p>
+        </div>
+        <div class="steps stagger">
+            <div class="step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3 class="step-title">Скачайте архив</h3>
+                    <p class="step-description">Загрузите последнюю версию KAMILA с официального источника. Архив содержит исполняемый файл и все зависимости.</p>
+                    <code class="step-code">KAMILA_v1.00.zip &middot; ~180 MB</code>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3 class="step-title">Распакуйте и запустите</h3>
+                    <p class="step-description">Распакуйте архив в любую папку и запустите <code>jarvis.exe</code> от имени администратора. Программа сама настроит окружение.</p>
+                    <code class="step-code">jarvis.exe &rarr; Запуск от администратора</code>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3 class="step-title">Скажите «Камила»</h3>
+                    <p class="step-description">Произнесите активационное слово или введите команду в текстовое поле. Ассистент ответит голосом и выполнит команду.</p>
+                    <code class="step-code">&laquo;Камила, который час?&raquo;</code>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">04</div>
+                <div class="step-content">
+                    <h3 class="step-title">Настройте под себя</h3>
+                    <p class="step-description">Откройте настройки: выберите голос, введите API-ключ OpenRouter для нейросетей, настройте токен Telegram-бота.</p>
+                    <code class="step-code">Кнопка &laquo;Настройки&raquo; &rarr; Параметры</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     FAQ
+     =========================== -->
+<section class="section" id="faq">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">FAQ</div>
+            <h2 class="section-title">Частые вопросы</h2>
+            <p class="section-subtitle">Ответы на самые популярные вопросы о KAMILA. Не нашли свой &mdash; напишите в Telegram.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item"><button class="faq-question"><span>Работает ли KAMILA без интернета?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>Да, базовый «Локальный» режим работает полностью офлайн. Распознавание речи идёт через модель Vosk, которая загружается на ваш ПК. Управление системой, таймеры, погода (после первого запроса с кэшем) &mdash; всё это доступно без интернета.</p><p>Интернет нужен только для режима «Нейросеть» (запросы к OpenRouter), генерации изображений и первой загрузки моделей.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Какие системные требования?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>Минимальные требования:</p><p>&middot; Windows 10 / 11 (64-bit)<br>&middot; 4 ГБ оперативной памяти<br>&middot; 500 МБ свободного места на диске<br>&middot; Микрофон (встроенный или USB)<br>&middot; Python 3.10+ (для запуска из исходников)</p><p>Для режима «Нейросеть» желательно 8 ГБ RAM и стабильное интернет-соединение.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Безопасно ли давать API-ключ OpenRouter?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>API-ключ хранится <strong>только локально</strong> в файле <code>kamila_api_key.txt</code> в папке с программой. Он никуда не отправляется, кроме как напрямую на сервер OpenRouter для выполнения ваших запросов.</p><p>KAMILA &mdash; open-source проект с открытым кодом. Вы можете самостоятельно проверить, что ключ не передаётся третьим лицам.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Как работает привязка к устройству в PRO?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>При активации PRO генерируется уникальный ID вашего компьютера на основе характеристик системы (имя ПК, процессор, серийный номер диска C:). Этот ID привязывается к ключу активации.</p><p>Это значит, что один ключ работает только на одном ПК. Перенести активацию на другой компьютер нельзя &mdash; нужно приобретать новый ключ.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Можно ли использовать свои голосовые модели?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>Да, KAMILA поддерживает пользовательские TTS-модели. Вы можете заменить файл <code>v5_ru.pt</code> в папке <code>models/</code> на свою обученную модель Silero или использовать другой TTS-движок.</p><p>Для распознавания речи можно заменить модель Vosk на любую совместимую. Все пути конфигурируются в коде.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Что такое «Протоколы» и как ими пользоваться?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>Протокол &mdash; это макрос, последовательность команд, которые выполняются одна за другой. Например, протокол «Утро» может содержать: <code>открой браузер, включи новости, покажи погоду</code>.</p><p>Протоколы можно записывать голосом (KAMILA будет запоминать все ваши команды), сохранять в JSON-файлы и добавлять в автозапуск &mdash; тогда протокол выполнится сразу при запуске программы.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Как работает Telegram-бот?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>Введите токен бота (получить у @BotFather) в настройках KAMILA. Бот запустится автоматически и будет ждать команд в Telegram.</p><p>Через бота можно: делать скриншоты, записывать экран, управлять громкостью, запускать приложения, смотреть нагрузку системы, управлять файлами, убивать процессы и многое другое. Полный список команд &mdash; в меню бота.</p></div></div></div>
+            <div class="faq-item"><button class="faq-question"><span>Что делать, если микрофон не работает?</span><span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-answer"><div class="faq-answer-content"><p>KAMILA автоматически определяет лучший микрофон в системе. Если распознавание не работает:</p><p>1. Проверьте, что микрофон выбран устройством ввода по умолчанию в Windows<br>2. Дайте разрешение на использование микрофона в настройках конфиденциальности<br>3. Перезапустите KAMILA &mdash; при старте программа выведет в лог выбранное устройство<br>4. Используйте текстовый ввод &mdash; все команды работают и через поле ввода</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     CTA
+     =========================== -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box fade-in">
+            <div class="cta-content">
+                <h2 class="cta-title">Готовы попробовать KAMILA?</h2>
+                <p class="cta-description">Скачайте ассистента прямо сейчас и получите 1 час бесплатной работы. Никакой регистрации, никаких карт &mdash; просто запустите и скажите «Камила».</p>
+                <div class="cta-actions">
+                    <a href="#" class="btn btn-primary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Скачать KAMILA v1.00
+                    </a>
+                    <a href="https://t.me/Jet_Technik" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121L8.482 12.98l-2.97-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.947z"/></svg>
+                        Telegram-канал
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===========================
+     FOOTER
+     =========================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.577617 40.8764L49.2543 8.15724L48.3895 5.61428L46.6598 0.528363L9.97767 3.66819L0.577617 40.8764Z" fill="white"/>
+                        <path d="M49.2543 8.15724L0.577617 40.8764L31.7144 59.7945L60.1401 35.1032L49.2543 8.15724Z" fill="#E5E5E5"/>
+                        <path d="M0.577617 40.8764L49.2543 8.15724M0.577617 40.8764L9.97767 3.66819L46.6598 0.528363L48.3895 5.61428L49.2543 8.15724M0.577617 40.8764L31.7144 59.7945L60.1401 35.1032L49.2543 8.15724" stroke="white" stroke-opacity="0.53"/>
+                    </svg>
+                    <span>KAMILA</span>
+                </a>
+                <p class="footer-description">Голосовой ассистент для Windows с поддержкой нейросетей, игрового режима и управления системой. Создано с любовью к деталям.</p>
+                <div class="footer-socials">
+                    <a href="https://t.me/Jet_Technik" class="footer-social" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121L8.482 12.98l-2.97-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.947z"/></svg></a>
+                    <a href="#" class="footer-social" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+                    <a href="https://www.tiktok.com/@jet_technik?_r=1&_t=ZS-98Iz1q9Tp9m" class="footer-social" aria-label="Tik-Tok"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-brand-tiktok"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M16.083 2h-4.083a1 1 0 0 0 -1 1v11.5a1.5 1.5 0 1 1 -2.519 -1.1l.12 -.1a1 1 0 0 0 .399 -.8v-4.326a1 1 0 0 0 -1.23 -.974a7.5 7.5 0 0 0 1.73 14.8l.243 -.005a7.5 7.5 0 0 0 7.257 -7.495v-2.7l.311 .153c1.122 .53 2.333 .868 3.59 .993a1 1 0 0 0 1.099 -.996v-4.033a1 1 0 0 0 -.834 -.986a5.005 5.005 0 0 1 -4.097 -4.096a1 1 0 0 0 -.986 -.835z" /></svg></a>
+                </div>
+            </div>
+            <div><h4 class="footer-column-title">Продукт</h4><ul class="footer-links"><li><a href="#features" class="footer-link">Возможности</a></li><li><a href="#modes" class="footer-link">Режимы</a></li><li><a href="#pricing" class="footer-link">Тарифы</a></li><li><a href="#install" class="footer-link">Установка</a></li><li><a href="#" class="footer-link"></a></li></ul></div>
+            <div><h4 class="footer-column-title">Ресурсы</h4><ul class="footer-links"><li><a href="#faq" class="footer-link">FAQ</a></li><li><a href="#" class="footer-link">Документация</a></li><li><a href="#" class="footer-link">Список команд</a></li><li><a href="#" class="footer-link">API OpenRouter</a></li><li><a href="#" class="footer-link">Silero TTS</a></li></ul></div>
+            <div><h4 class="footer-column-title">Контакты</h4><ul class="footer-links"><li><a href="https://t.me/Jet_Technik" class="footer-link" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://t.me/KamilabuyBOT" class="footer-link" target="_blank" rel="noopener">Получить ключ</a></li><li><a href="#" class="footer-link">Поддержка</a></li><li><a href="#" class="footer-link">Сообщить о баге</a></li><li><a href="#" class="footer-link">Предложить фичу</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">&copy; 2026 KAMILA. Все права защищены. Версия 1.00 (beta)</div>
+            <div class="footer-legal"><a href="#">Политика конфиденциальности</a><a href="#">Условия использования</a><a href="#">Лицензия</a></div>
+        </div>
+    </div>
+</footer>
+
+<script>
+/* ============================================================
+   PARTICLE BACKGROUND
+   ============================================================ */
+(function(){
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = {x:0, y:0};
+    let w, h;
+
+    function resize(){
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+        constructor(){
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.vx = (Math.random()-0.5)*0.3;
+            this.vy = (Math.random()-0.5)*0.3;
+            this.r = Math.random()*1.5+0.5;
+            this.alpha = Math.random()*0.3+0.1;
+        }
+        update(){
+            this.x += this.vx;
+            this.y += this.vy;
+            if(this.x < 0 || this.x > w) this.vx *= -1;
+            if(this.y < 0 || this.y > h) this.vy *= -1;
+            // subtle mouse attraction
+            const dx = mouse.x - this.x;
+            const dy = mouse.y - this.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 200){
+                this.vx += dx * 0.00003;
+                this.vy += dy * 0.00003;
+            }
+        }
+        draw(){
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
+            ctx.fill();
+        }
+    }
+
+    function initParticles(){
+        particles = [];
+        const count = Math.min(Math.floor(w * h / 12000), 120);
+        for(let i = 0; i < count; i++){
+            particles.push(new Particle());
+        }
+    }
+    initParticles();
+    window.addEventListener('resize', initParticles);
+
+    function drawConnections(){
+        for(let i = 0; i < particles.length; i++){
+            for(let j = i+1; j < particles.length; j++){
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 150){
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(255,255,255,${0.03 * (1 - dist/150)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function animate(){
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update(); p.draw(); });
+        drawConnections();
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+})();
+
+/* ============================================================
+   CURSOR GLOW
+   ============================================================ */
+(function(){
+    const glow = document.getElementById('cursorGlow');
+    let visible = false;
+    document.addEventListener('mousemove', e => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+        if(!visible){ visible = true; glow.style.opacity = '1'; }
+    });
+    document.addEventListener('mouseleave', () => { visible = false; glow.style.opacity = '0'; });
+})();
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+(function(){
+    const bar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (scrollTop / docHeight) * 100;
+        bar.style.width = progress + '%';
+    }, {passive:true});
+})();
+
+/* ============================================================
+   NAVIGATION SCROLL EFFECT
+   ============================================================ */
+(function(){
+    const nav = document.getElementById('nav');
+    const handleScroll = () => {
+        if(window.scrollY > 20){ nav.classList.add('scrolled'); }
+        else { nav.classList.remove('scrolled'); }
+    };
+    window.addEventListener('scroll', handleScroll, {passive:true});
+    handleScroll();
+})();
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+(function(){
+    const burger = document.getElementById('navBurger');
+    const menu = document.getElementById('navMenu');
+    burger.addEventListener('click', () => {
+        burger.classList.toggle('active');
+        menu.classList.toggle('mobile-open');
+    });
+    menu.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            burger.classList.remove('active');
+            menu.classList.remove('mobile-open');
+        });
+    });
+    document.addEventListener('keydown', e => {
+        if(e.key === 'Escape' && menu.classList.contains('mobile-open')){
+            burger.classList.remove('active');
+            menu.classList.remove('mobile-open');
+        }
+    });
+})();
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+        const item = q.parentElement;
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        if(!isActive) item.classList.add('active');
+    });
+});
+
+/* ============================================================
+   INTERSECTION OBSERVER FOR ANIMATIONS
+   ============================================================ */
+(function(){
+    const observerOptions = { threshold:0.08, rootMargin:'0px 0px -40px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.fade-in, .stagger').forEach(el => observer.observe(el));
+})();
+
+/* ============================================================
+   SMOOTH SCROLL FOR ANCHORS
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e){
+        const href = this.getAttribute('href');
+        if(href === '#' || href === '') return;
+        const target = document.querySelector(href);
+        if(target){
+            e.preventDefault();
+            const offset = 80;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({top, behavior:'smooth'});
+        }
+    });
+});
+
+/* ============================================================
+   TERMINAL TYPING EFFECT
+   ============================================================ */
+(function(){
+    const terminalBody = document.querySelector('.terminal-body');
+    if(!terminalBody) return;
+    const lines = terminalBody.querySelectorAll('.terminal-line');
+    lines.forEach((line, i) => {
+        line.style.opacity = '0';
+        line.style.transform = 'translateY(10px)';
+        line.style.transition = `opacity 0.4s ease ${i*0.35}s, transform 0.4s ease ${i*0.35}s`;
+    });
+    const terminalObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                lines.forEach(l => { l.style.opacity = '1'; l.style.transform = 'translateY(0)'; });
+                terminalObserver.unobserve(entry.target);
+            }
+        });
+    }, {threshold:0.3});
+    terminalObserver.observe(terminalBody);
+})();
+
+/* ============================================================
+   COUNTER ANIMATION
+   ============================================================ */
+(function(){
+    const counters = document.querySelectorAll('[data-count]');
+    const counterObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                const el = entry.target;
+                const target = parseInt(el.getAttribute('data-count'));
+                const suffix = el.textContent.replace(/[0-9]/g,'');
+                let current = 0;
+                const duration = 1200;
+                const step = target / (duration / 16);
+                const timer = setInterval(() => {
+                    current += step;
+                    if(current >= target){ current = target; clearInterval(timer); }
+                    el.textContent = Math.floor(current) + (target >= 100 ? '+' : '');
+                }, 16);
+                counterObserver.unobserve(el);
+            }
+        });
+    }, {threshold:0.5});
+    counters.forEach(c => counterObserver.observe(c));
+})();
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+(function(){
+    const btn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 600){ btn.classList.add('visible'); }
+        else { btn.classList.remove('visible'); }
+    }, {passive:true});
+    btn.addEventListener('click', () => {
+        window.scrollTo({top:0, behavior:'smooth'});
+    });
+})();
+
+/* ============================================================
+   REDUCE MOTION
+   ============================================================ */
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.style.setProperty('--transition-fast','0ms');
+    document.documentElement.style.setProperty('--transition-base','0ms');
+    document.documentElement.style.setProperty('--transition-slow','0ms');
+    document.querySelectorAll('.fade-in, .stagger > *').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.transition = 'none';
+    });
+}
+
+/* ============================================================
+   CONSOLE BRANDING
+   ============================================================ */
+console.log('%c KAMILA ', 'background:#000;color:#fff;font-size:20px;padding:8px 16px;border-radius:4px;font-weight:bold;');
+console.log('%c Voice Assistant for Windows ', 'color:#888;font-size:12px;');
+console.log('%c v1.00 (beta) ', 'color:#555;font-size:11px;');
+</script>
+</body>
+</html>
