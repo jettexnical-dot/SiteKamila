@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAMILA — Список команд</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1C1C1C;
+            --text-main: #FFFFFF;
+            --text-sec: #A0A0A0;
+            --accent: #005FF9;
+            --border: #2B2B2B;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-sec);
+            font-size: 16px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Section */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 40px 0 20px;
+            color: var(--text-main);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Grid */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        /* Card */
+        .cmd-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cmd-card:hover {
+            border-color: #3A3A3A;
+            transform: translateY(-2px);
+        }
+
+        .cmd-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .cmd-trigger {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            color: var(--text-sec);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+            align-self: flex-start;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #555;
+            font-size: 13px;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 26px; }
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Команды KAMILA</h1>
+    <p class="subtitle">Полный список голосовых и текстовых команд ассистента</p>
+</header>
+
+<div class="container">
+
+    <!-- ЛОКАЛЬНЫЙ РЕЖИМ -->
+    <div class="section-title">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-desktop"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10" /><path d="M7 20h10" /><path d="M9 16v4" /><path d="M15 16v4" /></svg>
+        Локальный режим
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Открыть приложение</span><span class="cmd-trigger">открой [браузер, стим, проводник]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Закрыть окно</span><span class="cmd-trigger">закрой окно</span></div>
+        <div class="cmd-card"><span class="cmd-name">Свернуть окно</span><span class="cmd-trigger">сверни окно</span></div>
+        <div class="cmd-card"><span class="cmd-name">Развернуть окно</span><span class="cmd-trigger">разверни окно</span></div>
+        <div class="cmd-card"><span class="cmd-name">Полноэкранный режим</span><span class="cmd-trigger">полноэкранный режим</span></div>
+        <div class="cmd-card"><span class="cmd-name">Скриншот</span><span class="cmd-trigger">сделай скриншот</span></div>
+        <div class="cmd-card"><span class="cmd-name">Создать папку</span><span class="cmd-trigger">создай папку [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Открыть папку</span><span class="cmd-trigger">открой папку [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Выделить текст</span><span class="cmd-trigger">выдели текст</span></div>
+        <div class="cmd-card"><span class="cmd-name">Копировать</span><span class="cmd-trigger">скопируй текст</span></div>
+        <div class="cmd-card"><span class="cmd-name">Вставить</span><span class="cmd-trigger">вставь текст</span></div>
+        <div class="cmd-card"><span class="cmd-name">Удалить слово</span><span class="cmd-trigger">удали последнее слово</span></div>
+        <div class="cmd-card"><span class="cmd-name">Удалить всё</span><span class="cmd-trigger">удали весь текст</span></div>
+        <div class="cmd-card"><span class="cmd-name">Сменить язык</span><span class="cmd-trigger">смени язык</span></div>
+        <div class="cmd-card"><span class="cmd-name">Тема Windows</span><span class="cmd-trigger">смени тему на темную/светлую</span></div>
+        <div class="cmd-card"><span class="cmd-name">Обои</span><span class="cmd-trigger">смени обои / случайные обои</span></div>
+        <div class="cmd-card"><span class="cmd-name">Папка обоев</span><span class="cmd-trigger">открой папку с обоями</span></div>
+        <div class="cmd-card"><span class="cmd-name">Громкость</span><span class="cmd-trigger">громкость 0-100 / увеличь / уменьши</span></div>
+        <div class="cmd-card"><span class="cmd-name">Яркость</span><span class="cmd-trigger">яркость 0-100 / увеличь / уменьши</span></div>
+        <div class="cmd-card"><span class="cmd-name">Звук вкл/выкл</span><span class="cmd-trigger">выключи звук / включи звук</span></div>
+        <div class="cmd-card"><span class="cmd-name">Проводник</span><span class="cmd-trigger">открой проводник</span></div>
+        <div class="cmd-card"><span class="cmd-name">Диспетчер задач</span><span class="cmd-trigger">открой диспетчер задач</span></div>
+        <div class="cmd-card"><span class="cmd-name">Заметки</span><span class="cmd-trigger">открой заметки / блокнот</span></div>
+        <div class="cmd-card"><span class="cmd-name">Список команд</span><span class="cmd-trigger">открой команды</span></div>
+        <div class="cmd-card"><span class="cmd-name">HTML файл</span><span class="cmd-trigger">создай файл с разметкой</span></div>
+        <div class="cmd-card"><span class="cmd-name">Поиск</span><span class="cmd-trigger">найди [запрос]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Сайт</span><span class="cmd-trigger">открой [вк, ютуб, почта]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Вкладки</span><span class="cmd-trigger">новая вкладка / закрой вкладку</span></div>
+        <div class="cmd-card"><span class="cmd-name">Обновить</span><span class="cmd-trigger">обнови страницу</span></div>
+        <div class="cmd-card"><span class="cmd-name">Музыка</span><span class="cmd-trigger">включи музыку</span></div>
+        <div class="cmd-card"><span class="cmd-name">Время и дата</span><span class="cmd-trigger">который час / какая дата</span></div>
+        <div class="cmd-card"><span class="cmd-name">Новости</span><span class="cmd-trigger">расскажи новости</span></div>
+        <div class="cmd-card"><span class="cmd-name">Кубик</span><span class="cmd-trigger">брось кубик</span></div>
+        <div class="cmd-card"><span class="cmd-name">Фильм</span><span class="cmd-trigger">случайный фильм</span></div>
+        <div class="cmd-card"><span class="cmd-name">Память</span><span class="cmd-trigger">запомни что... / вспомни про...</span></div>
+        <div class="cmd-card"><span class="cmd-name">Таймер</span><span class="cmd-trigger">таймер [минуты] минут</span></div>
+        <div class="cmd-card"><span class="cmd-name">Напоминание</span><span class="cmd-trigger">напомни через [время] [текст]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Отчет о работе</span><span class="cmd-trigger">сколько я сегодня работал</span></div>
+        <div class="cmd-card"><span class="cmd-name">Батарея</span><span class="cmd-trigger">проверить батарею / заряд</span></div>
+        <div class="cmd-card"><span class="cmd-name">Логи</span><span class="cmd-trigger">очисти логи</span></div>
+        <div class="cmd-card"><span class="cmd-name">Корзина</span><span class="cmd-trigger">очисти корзину</span></div>
+        <div class="cmd-card"><span class="cmd-name">Температура CPU</span><span class="cmd-trigger">температура процессора</span></div>
+        <div class="cmd-card"><span class="cmd-name">Нагрузка GPU</span><span class="cmd-trigger">нагрузка на видеокарту</span></div>
+        <div class="cmd-card"><span class="cmd-name">Bluetooth</span><span class="cmd-trigger">включи/выключи блютуз</span></div>
+        <div class="cmd-card"><span class="cmd-name">Wi-Fi</span><span class="cmd-trigger">включи/выключи вай фай</span></div>
+        <div class="cmd-card"><span class="cmd-name">Значки</span><span class="cmd-trigger">убери значки / верни значки</span></div>
+        <div class="cmd-card"><span class="cmd-name">Генерация картинок</span><span class="cmd-trigger">сгенерируй картинку [описание]</span></div>
+    </div>
+
+    <!-- ИГРОВОЙ РЕЖИМ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4"/><circle cx="17" cy="11" r="1"/><circle cx="15" cy="13" r="1"/></svg>
+        Игровой режим
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Переключить режим</span><span class="cmd-trigger">смени режим на игровой</span></div>
+        <div class="cmd-card"><span class="cmd-name">Оптимизация</span><span class="cmd-trigger">оптимизируй игру</span></div>
+        <div class="cmd-card"><span class="cmd-name">Удержание клавиши</span><span class="cmd-trigger">удерживай кнопку [w/space/shift]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Удержание нескольких</span><span class="cmd-trigger">удерживай кнопки w и shift</span></div>
+        <div class="cmd-card"><span class="cmd-name">Автокликер вкл</span><span class="cmd-trigger">активируй автокликер</span></div>
+        <div class="cmd-card"><span class="cmd-name">Автокликер выкл</span><span class="cmd-trigger">стоп автокликер</span></div>
+        <div class="cmd-card"><span class="cmd-name">Стоп всё</span><span class="cmd-trigger">останови все действия</span></div>
+        <div class="cmd-card"><span class="cmd-name">FPS оверлей</span><span class="cmd-trigger">покажи fps</span></div>
+        <div class="cmd-card"><span class="cmd-name">Пинг оверлей</span><span class="cmd-trigger">покажи пинг</span></div>
+        <div class="cmd-card"><span class="cmd-name">Прицел вкл</span><span class="cmd-trigger">активируй прицел</span></div>
+        <div class="cmd-card"><span class="cmd-name">Прицел выкл</span><span class="cmd-trigger">убери прицел</span></div>
+        <div class="cmd-card"><span class="cmd-name">Убрать дисплеи</span><span class="cmd-trigger">убери все дисплеи</span></div>
+        <div class="cmd-card"><span class="cmd-name">Запуск игры</span><span class="cmd-trigger">запусти игру [название]</span></div>
+    </div>
+
+    <!-- НЕЙРОСЕТЬ -->
+    <div class="section-title">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sparkles-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 6a9.3 9.3 0 0 0 1.516 -.546c.911 -.438 1.494 -1.015 1.937 -1.932c.207 -.428 .382 -.928 .547 -1.522c.165 .595 .34 1.095 .547 1.521c.443 .918 1.026 1.495 1.937 1.933c.426 .205 .925 .38 1.516 .546a9.3 9.3 0 0 0 -1.516 .547c-.911 .438 -1.494 1.015 -1.937 1.932a9 9 0 0 0 -.547 1.521c-.165 -.594 -.34 -1.095 -.547 -1.521c-.443 -.918 -1.026 -1.494 -1.937 -1.932a9 9 0 0 0 -1.516 -.547" /><path d="M3 14a21 21 0 0 0 1.652 -.532c2.542 -.953 3.853 -2.238 4.816 -4.806a20 20 0 0 0 .532 -1.662a20 20 0 0 0 .532 1.662c.963 2.567 2.275 3.853 4.816 4.806q .75 .28 1.652 .532a21 21 0 0 0 -1.652 .532c-2.542 .953 -3.854 2.238 -4.816 4.806a20 20 0 0 0 -.532 1.662a20 20 0 0 0 -.532 -1.662c-.963 -2.568 -2.275 -3.853 -4.816 -4.806a21 21 0 0 0 -1.652 -.532" /></svg>
+        Режим Нейросеть
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Включить нейросеть</span><span class="cmd-trigger">смени режим на нейросеть</span></div>
+        <div class="cmd-card"><span class="cmd-name">Любой вопрос</span><span class="cmd-trigger">[текст вопроса]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Выход</span><span class="cmd-trigger">стоп / остановись / пока</span></div>
+    </div>
+
+    <!-- ПРОТОКОЛЫ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg>
+        Протоколы
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Создать</span><span class="cmd-trigger">создай протокол [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Удалить</span><span class="cmd-trigger">удали протокол [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Список</span><span class="cmd-trigger">список протоколов</span></div>
+        <div class="cmd-card"><span class="cmd-name">Запустить</span><span class="cmd-trigger">запусти протокол [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Начать запись</span><span class="cmd-trigger">начать запись протокола [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Закончить запись</span><span class="cmd-trigger">закончить запись протокола</span></div>
+        <div class="cmd-card"><span class="cmd-name">Автозапуск</span><span class="cmd-trigger">добавь в автозапуск [имя]</span></div>
+    </div>
+
+    <!-- ПОГОДА -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m-8-9H3m18 0h-1m-2.636-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707"/><circle cx="12" cy="12" r="4"/></svg>
+        Погода
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Текущая погода</span><span class="cmd-trigger">погода / покажи погоду</span></div>
+        <div class="cmd-card"><span class="cmd-name">Город</span><span class="cmd-trigger">погода в [город]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Настройка города</span><span class="cmd-trigger">Настройки → Город для погоды</span></div>
+    </div>
+
+    <!-- БРАУЗЕР -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18"/><path d="M12 3a15 15 0 0 0 0 18"/></svg>
+        Браузер
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Открыть сайт</span><span class="cmd-trigger">открой [вк, ютуб, почта]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Поиск</span><span class="cmd-trigger">найди [запрос]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Новая вкладка</span><span class="cmd-trigger">новая вкладка</span></div>
+        <div class="cmd-card"><span class="cmd-name">Закрыть вкладку</span><span class="cmd-trigger">закрой вкладку</span></div>
+        <div class="cmd-card"><span class="cmd-name">Обновить</span><span class="cmd-trigger">обнови страницу</span></div>
+    </div>
+
+    <!-- МЕДИА -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        Медиа
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Spotify</span><span class="cmd-trigger">включи музыку spotify</span></div>
+        <div class="cmd-card"><span class="cmd-name">YouTube пауза</span><span class="cmd-trigger">пауза youtube</span></div>
+        <div class="cmd-card"><span class="cmd-name">Перемотка</span><span class="cmd-trigger">перемотай вперед youtube</span></div>
+    </div>
+
+    <!-- СИСТЕМНЫЕ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        Системные команды
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Батарея</span><span class="cmd-trigger">батарея / заряд</span></div>
+        <div class="cmd-card"><span class="cmd-name">Очистка логов</span><span class="cmd-trigger">очисти логи</span></div>
+        <div class="cmd-card"><span class="cmd-name">Очистка корзины</span><span class="cmd-trigger">очисти корзину</span></div>
+        <div class="cmd-card"><span class="cmd-name">Температура CPU</span><span class="cmd-trigger">температура процессора</span></div>
+        <div class="cmd-card"><span class="cmd-name">Нагрузка GPU</span><span class="cmd-trigger">нагрузка на видеокарту</span></div>
+        <div class="cmd-card"><span class="cmd-name">Bluetooth</span><span class="cmd-trigger">включи/выключи блютуз</span></div>
+        <div class="cmd-card"><span class="cmd-name">Тема Windows</span><span class="cmd-trigger">смени тему на тёмную/светлую</span></div>
+        <div class="cmd-card"><span class="cmd-name">Обои</span><span class="cmd-trigger">смени обои / случайные обои</span></div>
+        <div class="cmd-card"><span class="cmd-name">Очистка мусора</span><span class="cmd-trigger">очисти мусор</span></div>
+        <div class="cmd-card"><span class="cmd-name">Выключение ПК</span><span class="cmd-trigger">выключи пк</span></div>
+        <div class="cmd-card"><span class="cmd-name">Перезагрузка</span><span class="cmd-trigger">перезагрузи пк</span></div>
+        <div class="cmd-card"><span class="cmd-name">Спящий режим</span><span class="cmd-trigger">спящий режим / в сон</span></div>
+    </div>
+
+    <!-- ИНФОРМАЦИОННЫЕ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg>
+        Информационные
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Время</span><span class="cmd-trigger">который час</span></div>
+        <div class="cmd-card"><span class="cmd-name">Дата</span><span class="cmd-trigger">какая дата / число</span></div>
+        <div class="cmd-card"><span class="cmd-name">Новости</span><span class="cmd-trigger">расскажи новости</span></div>
+        <div class="cmd-card"><span class="cmd-name">Кубик</span><span class="cmd-trigger">брось кубик</span></div>
+        <div class="cmd-card"><span class="cmd-name">Фильм</span><span class="cmd-trigger">случайный фильм</span></div>
+        <div class="cmd-card"><span class="cmd-name">Память (запись)</span><span class="cmd-trigger">запомни что [текст]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Память (чтение)</span><span class="cmd-trigger">что я говорил про [тема]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Таймер</span><span class="cmd-trigger">таймер [минуты] минут</span></div>
+        <div class="cmd-card"><span class="cmd-name">Напоминание</span><span class="cmd-trigger">напомни через [время] [текст]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Отчет о работе</span><span class="cmd-trigger">сколько я сегодня работал</span></div>
+    </div>
+
+    <!-- УМНЫЙ СНАЙПЕР И ДИКОВКА -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        Умный снайпер и Диктовка
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Клик по тексту</span><span class="cmd-trigger">кликни на [текст]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Закрыть окно</span><span class="cmd-trigger">кликни на закрыть / крестик</span></div>
+        <div class="cmd-card"><span class="cmd-name">Начать диктовку</span><span class="cmd-trigger">пиши под диктовку</span></div>
+        <div class="cmd-card"><span class="cmd-name">Остановить диктовку</span><span class="cmd-trigger">останови диктовку</span></div>
+    </div>
+
+    <!-- ПОИСК ФАЙЛОВ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        Поиск файлов
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Найти файл</span><span class="cmd-trigger">найди файл [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Открыть файл</span><span class="cmd-trigger">открой файл [имя]</span></div>
+        <div class="cmd-card"><span class="cmd-name">Открыть папку</span><span class="cmd-trigger">открой папку [имя]</span></div>
+    </div>
+
+    <!-- АКТИВАЦИЯ -->
+    <div class="section-title">
+        <svg class="section-icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11v-5a4 4 0 1 1 8 0v5"/></svg>
+        Активация и Настройки
+    </div>
+    <div class="commands-grid">
+        <div class="cmd-card"><span class="cmd-name">Активация PRO</span><span class="cmd-trigger">активировать / ввести ключ</span></div>
+        <div class="cmd-card"><span class="cmd-name">Статус</span><span class="cmd-trigger">статус / сколько осталось</span></div>
+        <div class="cmd-card"><span class="cmd-name">Голос вкл</span><span class="cmd-trigger">говори / включи голос</span></div>
+        <div class="cmd-card"><span class="cmd-name">Голос выкл</span><span class="cmd-trigger">молчи / выключи голос</span></div>
+    </div>
+
+</div>
+
+<footer>
+    &copy; 2026 KAMILA &middot; <a href="https://t.me/Jet_Technik">Telegram-канал</a> &middot; <a href="https://t.me/KamilabuyBOT">Поддержка</a>
+</footer>
+
+</body>
+</html>
